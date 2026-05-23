@@ -1,34 +1,57 @@
-# Crystal Clear Back Office Lite
+# Crystal Clear Operation Status Site
 
-เวอร์ชั่นนี้ทำให้ใช้ง่ายที่สุด: มีแค่หน้าเดียวสำหรับ
+เว็บใหม่แบบไม่รก เน้น Operation อย่างเดียว:
 
-- ดู Dashboard
-- เพิ่มลูกค้า / เพิ่มเคส
-- เปลี่ยนสถานะ
-- บันทึกรายได้
-- บันทึกต้นทุน
-- ใส่ลิงก์รูปพิมพ์ปูน / รีเทนเนอร์ / รีวิว
-- อัปขึ้น GitHub Pages ได้เลย
+1. ลูกค้าเช็คสถานะได้ด้วย HN + PIN
+2. ร้านเพิ่มเคสใหม่ได้
+3. ร้านอัปเดตสถานะได้
+4. ข้อมูลเก็บใน Google Sheet
+
+## Google Sheet ที่สร้างให้แล้ว
+
+https://docs.google.com/spreadsheets/d/1d7e3a7KlDN_czftMrT6byGiDyaxLLDLUwSqBKlWrqUo/edit
 
 ## วิธีอัปขึ้น GitHub Pages
 
-1. สร้าง Repository ใหม่ใน GitHub
-2. อัปโหลดไฟล์ทั้งหมดในโฟลเดอร์นี้
+1. สร้าง Repository ใหม่ เช่น `crystal-clear-status`
+2. อัปโหลดไฟล์:
+   - index.html
+   - style.css
+   - app.js
+   - config.js
+   - apps-script/Code.gs
 3. ไปที่ Settings > Pages
 4. Source เลือก Deploy from a branch
 5. Branch เลือก main / root
-6. รอ GitHub สร้างลิงก์เว็บ
+6. รอลิงก์เว็บ
 
 ## วิธีต่อ Google Sheet
 
-1. เปิด Google Sheet ที่ต้องการใช้เก็บข้อมูล
+1. เปิด Google Sheet ที่สร้างให้
 2. ไปที่ Extensions > Apps Script
-3. สร้างไฟล์ `Code.gs`
-4. วางโค้ดจาก `apps-script/Code.gs`
-5. กด Deploy > New deployment > Web app
-6. Execute as: Me
-7. Who has access: Anyone
-8. Copy Web App URL
-9. เปิดเว็บ Crystal Clear > ตั้งค่า > วาง URL > บันทึก
+3. วางโค้ดจาก `apps-script/Code.gs`
+4. Deploy > New deployment > Web app
+5. Execute as: Me
+6. Who has access: Anyone
+7. Copy Web App URL
+8. เปิดไฟล์ `config.js`
+9. ใส่ URL แบบนี้:
 
-ถ้ายังไม่ต่อ Google Sheet เว็บจะเก็บข้อมูลในเครื่องด้วย LocalStorage ก่อน
+```js
+window.API_URL = "https://script.google.com/macros/s/xxxx/exec";
+```
+
+10. อัปไฟล์ config.js กลับขึ้น GitHub
+
+## วิธีให้ลูกค้าเช็ค
+
+ส่งให้ลูกค้า:
+- ลิงก์เว็บ
+- HN เช่น HN-2605-0001
+- PIN เช่น 1234
+
+## Admin PIN
+
+ค่าเริ่มต้นคือ `2468`
+
+เปลี่ยนได้ที่ Google Sheet > Settings > adminPin
