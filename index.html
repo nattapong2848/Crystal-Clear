@@ -1,62 +1,159 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Crystal Clear Back Office</title>
-  <meta name="description" content="Premium back office for Clear Retainer order, impression, cost, payment and media tracking." />
-  <link rel="icon" href="assets/logo.jpeg" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crystal Clear Back Office Lite</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="aurora aurora-a"></div>
-  <div class="aurora aurora-b"></div>
-  <div class="aurora aurora-c"></div>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
 
-  <div id="appShell" class="app-shell">
-    <aside class="sidebar">
-      <div class="brand-card">
-        <img class="brand-logo" src="assets/logo.jpeg" alt="Crystal Clear Logo" />
-        <div>
-          <div class="brand-kicker">Premium Dental Ops</div>
-          <h1>Crystal Clear</h1>
-          <p>Retainer Back Office</p>
-        </div>
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/logo.jpeg" alt="Crystal Clear Logo" onerror="this.style.display='none'">
+      <div>
+        <h1>Crystal Clear</h1>
+        <p>ระบบหลังบ้านรีเทนเนอร์แบบง่าย</p>
+      </div>
+    </div>
+    <button class="ghost" onclick="openSettings()">ตั้งค่า</button>
+  </header>
+
+  <main class="app">
+    <section class="hero">
+      <div>
+        <span class="pill">Lite Version</span>
+        <h2>ดูงานค้าง เพิ่มเคส อัปเดตสถานะ จบในหน้าเดียว</h2>
+        <p>ออกแบบให้ใช้จริงแบบเร็ว ไม่ซับซ้อน เหมาะกับทำงานคนเดียว</p>
+      </div>
+      <button class="primary big" onclick="openCaseModal()">+ เพิ่มเคสใหม่</button>
+    </section>
+
+    <section class="cards">
+      <article class="card">
+        <span>งานทั้งหมด</span>
+        <strong id="statAll">0</strong>
+      </article>
+      <article class="card warning">
+        <span>รอพิมพ์ฟัน</span>
+        <strong id="statWaiting">0</strong>
+      </article>
+      <article class="card danger">
+        <span>พิมพ์ไม่ผ่าน</span>
+        <strong id="statFailed">0</strong>
+      </article>
+      <article class="card active">
+        <span>ระหว่างทำ</span>
+        <strong id="statWorking">0</strong>
+      </article>
+      <article class="card success">
+        <span>พร้อมส่ง/ปิดงาน</span>
+        <strong id="statDone">0</strong>
+      </article>
+    </section>
+
+    <section class="toolbar">
+      <input id="searchInput" placeholder="ค้นหาชื่อ / เบอร์ / HN" oninput="render()" />
+      <select id="statusFilter" onchange="render()">
+        <option value="">ทุกสถานะ</option>
+      </select>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h3>รายการเคส</h3>
+        <small>กดที่เคสเพื่อแก้ไข / เปลี่ยนสถานะ / บันทึกต้นทุน</small>
+      </div>
+      <div id="caseList" class="case-list"></div>
+    </section>
+  </main>
+
+  <!-- Case Modal -->
+  <dialog id="caseModal">
+    <form method="dialog" class="modal-card" onsubmit="event.preventDefault(); saveCase();">
+      <div class="modal-head">
+        <h3 id="modalTitle">เพิ่มเคสใหม่</h3>
+        <button type="button" class="icon-btn" onclick="closeCaseModal()">×</button>
       </div>
 
-      <nav id="nav" class="nav"></nav>
+      <input type="hidden" id="caseId">
 
-      <div class="side-widget">
-        <div class="sparkle">✦</div>
-        <strong>Focus Today</strong>
-        <p id="focusText">กำลังโหลดงานที่ต้องตาม...</p>
+      <div class="grid">
+        <label>ชื่อลูกค้า
+          <input id="customerName" required placeholder="เช่น คุณมิ้นท์">
+        </label>
+        <label>เบอร์โทร
+          <input id="phone" placeholder="08x-xxx-xxxx">
+        </label>
       </div>
-    </aside>
 
-    <main class="main">
-      <header class="topbar">
-        <div>
-          <div class="page-kicker">Crystal Clear Command Center</div>
-          <h2 id="pageTitle">Dashboard</h2>
-        </div>
-        <div class="top-actions">
-          <div class="search-wrap">
-            <span>⌕</span>
-            <input id="globalSearch" type="search" placeholder="ค้นหา HN / ชื่อลูกค้า / เบอร์ / สถานะ" />
-          </div>
-          <button class="btn secondary" data-action="refresh">รีเฟรช</button>
-          <button class="btn primary" data-action="openOrderModal">+ เปิดออเดอร์</button>
-        </div>
-      </header>
+      <label>ที่อยู่ / หมายเหตุจัดส่ง
+        <textarea id="address" rows="2" placeholder="ใส่ที่อยู่หรือโน้ตสั้น ๆ"></textarea>
+      </label>
 
-      <section id="content" class="content"></section>
-    </main>
-  </div>
+      <div class="grid">
+        <label>สินค้า
+          <select id="productType">
+            <option>Clear Retainer - ชิ้นบน</option>
+            <option>Clear Retainer - ชิ้นล่าง</option>
+            <option>Clear Retainer - บน+ล่าง</option>
+          </select>
+        </label>
+        <label>สถานะงาน
+          <select id="status"></select>
+        </label>
+      </div>
 
-  <div id="toast" class="toast"></div>
-  <div id="modalRoot" class="modal-root hidden"></div>
+      <div class="grid money">
+        <label>รายได้ / ราคาขาย
+          <input id="revenue" type="number" min="0" step="1" placeholder="0">
+        </label>
+        <label>ต้นทุนรวม
+          <input id="cost" type="number" min="0" step="1" placeholder="0">
+        </label>
+      </div>
 
-  <script src="config.js"></script>
+      <div class="profit-box">
+        <span>กำไรประมาณ</span>
+        <strong id="profitPreview">฿0</strong>
+      </div>
+
+      <label>ลิงก์รูปพิมพ์ปูน / รีเทนเนอร์ / รีวิว
+        <input id="photoUrl" placeholder="วางลิงก์ Google Drive หรือรูปภาพ">
+      </label>
+
+      <label>โน้ต
+        <textarea id="note" rows="3" placeholder="เช่น พิมพ์รอบ 2, ฟันบน, ลูกค้าขอรีบ"></textarea>
+      </label>
+
+      <div class="actions">
+        <button type="button" class="danger-btn" id="deleteBtn" onclick="deleteCase()" style="display:none;">ลบเคส</button>
+        <button type="button" class="ghost" onclick="closeCaseModal()">ยกเลิก</button>
+        <button class="primary" type="submit">บันทึก</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Settings Modal -->
+  <dialog id="settingsModal">
+    <form method="dialog" class="modal-card small" onsubmit="event.preventDefault(); saveSettings();">
+      <div class="modal-head">
+        <h3>ตั้งค่าเชื่อม Google Sheet</h3>
+        <button type="button" class="icon-btn" onclick="closeSettings()">×</button>
+      </div>
+      <p class="hint">ใส่ Web App URL จาก Google Apps Script ถ้ายังไม่ใส่ ระบบจะเก็บข้อมูลในเครื่องแบบ Demo ก่อน</p>
+      <label>Google Apps Script Web App URL
+        <input id="apiUrl" placeholder="https://script.google.com/macros/s/.../exec">
+      </label>
+      <div class="actions">
+        <button type="button" class="ghost" onclick="closeSettings()">ปิด</button>
+        <button class="primary" type="submit">บันทึก</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="app.js"></script>
 </body>
 </html>
