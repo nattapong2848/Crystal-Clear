@@ -24,7 +24,9 @@ function init(){
 init();
 
 function apiUrl(){
-  return (window.API_URL || "").trim();
+  return (window.API_URL || "function apiUrl(){
+  return "https://script.google.com/macros/s/AKfycbx8o0Fb7XvANoagptA795gdYhvbnsVC4sYNoxsSEP6HpaHFPEKgh1_GMe5AYgyrBZNgsA/exec";
+}").trim();
 }
 
 async function callApi(action, payload={}){
